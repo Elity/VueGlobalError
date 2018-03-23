@@ -1,18 +1,18 @@
 # VueGlobalError
 Vue全局错误处理插件，可catch住method里面同步错误与异步错误
 
-##Usage
+## Usage
 
-`javascript
+```javascript
 // in main.js
 
 Vue.use(VueGlobalError(err=>{
 	// handle global error
 }))
 
-`
+```
 
-`javascript
+```javascript
 
 function maybeAsyncError() {
   return new Promise((resolve, reject) => {
@@ -34,7 +34,7 @@ export default {
 
 }
 
-`
+```
 
 ##为什么需要把Vue错误处理流程改成这样？
 [Vue中异步错误处理](http://www.ccc5.cc/2213.html "Vue中异步错误处理")
