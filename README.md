@@ -1,0 +1,2 @@
+# VueGlobalError
+Vue全局错误处理插件，可catch住method里面同步错误与异步错误
