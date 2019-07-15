@@ -6,32 +6,30 @@ Vue全局错误处理插件，可catch住method里面同步错误与异步错误
 ```javascript
 // in main.js
 
-Vue.use(VueGlobalError(err=>{
-	// handle global error
-}))
+Vue.use(asyncErrorCatch, {
+  handler(err) {
+    console.log("catch async error:", err.message);
+  }
+});
 
 ```
 
 ```javascript
 
-function maybeAsyncError() {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => Math.random() > 0.5 ? resolve() : reject('async throw error'), 100)
-  })
-}
-
 // in component
-export default {
-
-	method:{
-		async fn() {
-			throw 'sync throw error'
-		},
-		async fn1(){
-			await maybeAsyncError()
-		}
-	}
-
+export default{
+  name: "MyPage",
+  catchAsyncError: true,
+  methods: {
+    async fn() {
+      // Will catch by plugin
+      throw new Error("this is an async error")
+    },
+    test() {
+      // Will catch by Vue.config.errorHandler
+      throw new Error('sync error')
+    }
+  }
 }
 
 ```
