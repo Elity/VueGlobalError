@@ -1,24 +1,23 @@
-export default function VueGlobalError(handle) {
-  if (typeof handle !== "function")
-    throw new TypeError(handle + " is not a function");
-  let VueGlobalErrorHandlePlugin = {};
-  VueGlobalErrorHandlePlugin.install = (Vue, options) => {
-    Vue.mixin({
-      beforeCreate() {
-        const methods = this.$options.methods || {};
-        Object.keys(methods).forEach(key => {
-          let fn = methods[key];
-          this.$options.methods[key] = function(...args) {
-            let ret = fn.apply(this, args);
-            if (ret && typeof ret.catch === "function") {
-              return ret.catch(handle);
-            } else {
-              return ret;
-            }
-          };
-        });
-      }
-    });
-  };
-  return VueGlobalErrorHandlePlugin;
-}
+const install = (Vue, { handler = () => {} }) => {
+  Vue.mixin({
+    beforeCreate() {
+      const options = this.$options;
+      const { methods = {}, catchAsyncError } = options;
+      if (!catchAsyncError) return;
+      Object.keys(methods).forEach(key => {
+        const fn = methods[key];
+        options.methods[key] = function(...args) {
+          const ret = fn.apply(this, args);
+          if (ret && typeof ret.catch === "function") {
+            return ret.catch(handler);
+          }
+          return ret;
+        };
+      });
+    }
+  });
+};
+
+export default {
+  install
+};
